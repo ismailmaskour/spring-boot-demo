@@ -2,10 +2,13 @@ package com.example.demo.absence;
 
 import java.util.Date;
 
+import com.example.demo.DTO.Statut;
 import com.example.demo.motif_absence.MotifAbsence;
 import com.example.demo.utils.Constant;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,9 +45,32 @@ public class Absence {
     @Column(name = "date_fin", nullable = false)
     private Date dateFin;
 
-    @JoinColumn(name = "code", foreignKey = @ForeignKey(name = "fk_absence_motif_absence"), nullable = false)
-    @ManyToOne()
-    private MotifAbsence motif;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "statut")
+    private Statut statut;
+
+    @Column(name = "cree_le")
+    private Date creeLe;
+
+    @Column(name = "cree_par")
+    private Long creePar;
+
+    @Column(name = "valide_le")
+    private Date valideLe;
+
+    @Column(name = "valide_par")
+    private Long validePar;
+
+    @Column(name = "annule_le")
+    private Date annuleLe;
+
+    @Column(name = "annule_par")
+    private Long annulePar;
+    
+    @Column(name = "motif_annulation")
+    private Long motifAnnulation;
+
+    private Long motif;
 
 }
 

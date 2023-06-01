@@ -1,23 +1,16 @@
 package com.example.demo.DTO;
 
-
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AbsenceRequest {
+public class FindAbsenceByCollaboratorRequest {
 
-    private Long identifiant;
     private Long matricule;
-    private Date dateDebut;
-    private Date dateFin;
-    private Long motif;
+    private int first;
+    private int limit;
 
 }

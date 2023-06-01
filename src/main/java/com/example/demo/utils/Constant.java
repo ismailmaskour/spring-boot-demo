@@ -4,12 +4,11 @@ import java.io.Serializable;
 
 public class Constant implements Serializable {
 
-    public static final String CORSS_ORIGINS = "http://localhost:4200/";
+    public static final String FRONT_URL = "http://localhost:4200/,http://localhost:63032/";
 
     private static final long serialVersionUID = 3588599899157982056L;
     public static final String SCHEMA = "public";
     public static final String SCHEMA_PARAM = "web_inter_gi_param";
-    public static final long ACCESS_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60;
     public static final String SIGNING_KEY = "acapsctrl";
 
     public static final String TOKEN_PREFIX = "Bearer ";
