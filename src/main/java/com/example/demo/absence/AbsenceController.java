@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.AbsenceRequest;
 import com.example.demo.DTO.AbsenseResult;
+import com.example.demo.DTO.AnnulerAbsence;
 import com.example.demo.DTO.FindAbsenceByCollaboratorRequest;
 import com.example.demo.DTO.ResponseDTO;
 import com.example.demo.collaborateur.Collaborateur;
@@ -107,11 +108,11 @@ public class AbsenceController {
         }
     }
     @PostMapping("/cancelAbsance")
-    public ResponseEntity<ResponseDTO> cancelAbsance(@RequestBody List<Long> ids, @RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
+    public ResponseEntity<ResponseDTO> cancelAbsance(@RequestBody AnnulerAbsence annulerAbsence, @RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
             throws ItemNotFoundException {
         try {
 
-            ResponseDTO response = this.absenceService.cancelAbsance(ids, jwtToken);
+            ResponseDTO response = this.absenceService.cancelAbsance(annulerAbsence, jwtToken);
 
             if (Constant.CODE_MESSAGE_EREUR.equals(response.getCodeMessage())) {
                 return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);

@@ -2,11 +2,16 @@ package com.example.demo.collaborateur;
 
 import java.util.Date;
 
+import com.example.demo.photo.Photo;
 import com.example.demo.utils.Constant;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,8 +27,10 @@ import lombok.Setter;
 public class Collaborateur {
 
     @Id
-    // @SequenceGenerator(name = "collaborateur_sequence", sequenceName = "collaborateur_sequence", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "collaborateur_sequence")
+    // @SequenceGenerator(name = "collaborateur_sequence", sequenceName =
+    // "collaborateur_sequence", allocationSize = 1)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+    // "collaborateur_sequence")
     @Column(name = "matricule", updatable = false)
     private Long matricule;
 
@@ -41,5 +48,9 @@ public class Collaborateur {
 
     @Column(name = "salaire", nullable = false)
     private float salaire;
+
+    @JoinColumn(name = "photo")
+    @OneToOne(cascade = CascadeType.ALL)
+    private Photo photo;
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.DTO.CollaboratorCriteria;
 import com.example.demo.DTO.ResponseDTO;
 import com.example.demo.exception.ItemNotFoundException;
 import com.example.demo.security.config.JwtService;
@@ -30,11 +31,11 @@ public class CollaborateurController {
     private static final Logger logger = LogManager.getLogger(CollaborateurController.class);
 
     @PostMapping("/createCollaborator")
-    public ResponseEntity<ResponseDTO> createCollaborator(@RequestBody Collaborateur collaborateur)
+    public ResponseEntity<ResponseDTO> createCollaborator(@RequestBody Collaborateur collaborateur, @RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
             throws ItemNotFoundException {
         try {
 
-            ResponseDTO response = this.collaborateurService.createCollaborator(collaborateur);
+            ResponseDTO response = this.collaborateurService.createCollaborator(collaborateur, jwtToken);
 
             if (Constant.CODE_MESSAGE_EREUR.equals(response.getCodeMessage())) {
                 return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
@@ -48,11 +49,11 @@ public class CollaborateurController {
     }
 
     @PostMapping("/updateCollaborator")
-    public ResponseEntity<ResponseDTO> updateCollaborator(@RequestBody Collaborateur collaborateur)
+    public ResponseEntity<ResponseDTO> updateCollaborator(@RequestBody Collaborateur collaborateur, @RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
             throws ItemNotFoundException {
         try {
 
-            ResponseDTO response = this.collaborateurService.updateCollaborator(collaborateur);
+            ResponseDTO response = this.collaborateurService.updateCollaborator(collaborateur, jwtToken);
 
             if (Constant.CODE_MESSAGE_EREUR.equals(response.getCodeMessage())) {
                 return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
@@ -66,11 +67,11 @@ public class CollaborateurController {
     }
     
     @PostMapping("/deleteCollaborator")
-    public ResponseEntity<ResponseDTO> deleteCollaborator(@RequestBody Collaborateur collaborateur)
+    public ResponseEntity<ResponseDTO> deleteCollaborator(@RequestBody Collaborateur collaborateur, @RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
             throws ItemNotFoundException {
         try {
 
-            ResponseDTO response = this.collaborateurService.deleteCollaborator(collaborateur);
+            ResponseDTO response = this.collaborateurService.deleteCollaborator(collaborateur, jwtToken);
 
             if (Constant.CODE_MESSAGE_EREUR.equals(response.getCodeMessage())) {
                 return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);
@@ -84,11 +85,11 @@ public class CollaborateurController {
     }
 
     @PostMapping("/getCollaborators")
-    public ResponseEntity<ResponseDTO> getCollaborators(@RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
+    public ResponseEntity<ResponseDTO> getCollaborators(@RequestBody CollaboratorCriteria cc, @RequestHeader(name = SecurityConstant.HEADER_STRING) String jwtToken)
             throws ItemNotFoundException {
         try {
 
-            ResponseDTO response = this.collaborateurService.getCollaborators(jwtToken);
+            ResponseDTO response = this.collaborateurService.getCollaborateursByCriteria(cc, jwtToken);
 
             if (Constant.CODE_MESSAGE_EREUR.equals(response.getCodeMessage())) {
                 return new ResponseEntity<ResponseDTO>(response, HttpStatus.BAD_REQUEST);

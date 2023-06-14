@@ -25,9 +25,9 @@ public interface AbsenceRepository extends JpaRepository<Absence, Long> {
             + " ab.annule_le annuleLe,"
             + " (SELECT CONCAT(userA.firstname,' ',userA.lastname) FROM _user userA WHERE id= ab.annule_par) AS annulePar,"
             + " ab.statut AS statut,"
-            + " ab.motif_annulation AS motifAnnulation,"
             + " mab.libelle AS motifName,"
-            + " mab.code AS motifId"
+            + " mab.code AS motifId,"
+            + " (SELECT libelle FROM "+Constant.SCHEMA+".motif_annulation WHERE identifiant = ab.motif_annulation) AS motifAnnulation"
             + " FROM " + Constant.SCHEMA + ".absence ab, "+ Constant.SCHEMA +".motif_absence mab,"+ Constant.SCHEMA +"._user u"
             + " WHERE ab.collaborateur = :matricule"
             + " AND ab.motif = mab.code"
@@ -37,15 +37,26 @@ public interface AbsenceRepository extends JpaRepository<Absence, Long> {
             nativeQuery = true)
     public List<AbsenseResult> findByMatricule(@Param("matricule") Long matricule, @Param("first") int first, @Param("limit") int limit);
 
-    @Query(nativeQuery = true, value = "SELECT count(*) From " + Constant.SCHEMA
+
+
+    @Query(value = "SELECT COUNT(*)"
+            + " FROM " + Constant.SCHEMA + ".absence ab, "+ Constant.SCHEMA +".motif_absence mab,"+ Constant.SCHEMA +"._user u"
+            + " WHERE ab.collaborateur = :matricule"
+            + " AND ab.motif = mab.code"
+            + " AND ab.cree_par = u.id",
+            nativeQuery = true)
+    public int getRowsNumber(@Param("matricule") Long matricule);
+    
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(*) From " + Constant.SCHEMA
             + ".absence WHERE collaborateur = :matricule"
             + " AND (:dateDebut BETWEEN date_debut AND date_fin"
             + " OR date_debut BETWEEN :dateDebut AND  :dateFin)")
     public int getCount(@Param("matricule") Long matricule, @Param("dateDebut") Date dateDebut,
             @Param("dateFin") Date dateDefin);
 
-    @Query(nativeQuery = true, value = "SELECT count(*) From " + Constant.SCHEMA
-            + ".absence ab WHERE collaborateur = :matricule AND (ab.identifiant <> :absenceId)"
+    @Query(nativeQuery = true, value = "SELECT COUNT(*) From " + Constant.SCHEMA
+            + ".absence ab WHERE collaborateur = :matricule AND (:absenceId IS NULL OR ab.identifiant <> :absenceId)"
             + " AND (:dateDebut BETWEEN date_debut AND date_fin"
             + " OR date_debut BETWEEN :dateDebut AND :dateFin)")
     public int getCount(@Param("matricule") Long matricule, @Param("absenceId") Long absenceId, @Param("dateDebut") Date dateDebut,
