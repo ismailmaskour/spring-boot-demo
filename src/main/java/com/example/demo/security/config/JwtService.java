@@ -1,29 +1,38 @@
 package com.example.demo.security.config;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DTO.ResponseDTO;
 import com.example.demo.DTO.UserInfo;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.utils.SecurityConstant;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class JwtService {
+
+    Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     private final UserRepository userRepository;
 
@@ -71,9 +80,10 @@ public class JwtService {
 
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -93,6 +103,18 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SecurityConstant.SIGNING_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public void handleTokenException(HttpServletResponse res, HttpStatus status, String message) {
+        try {
+            res.setStatus(status.value());
+            ObjectMapper mapper = new ObjectMapper();
+            String response = mapper.writeValueAsString(new ResponseDTO(status.value() + "", message, null));
+            res.setContentType("application/json");
+            res.getWriter().write(response);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
 }

@@ -57,7 +57,8 @@ public class AbsenceService {
             return response;
         }
 
-        int count = absenceRepository.getCount(absenceRequest.getMatricule(), absenceRequest.getDateDebut(),
+        int count = absenceRepository.getCount(absenceRequest.getMatricule(), absenceRequest.getIdentifiant(),
+                absenceRequest.getDateDebut(),
                 absenceRequest.getDateFin());
         if (count > 0) {
             response.setCodeMessage(Constant.CODE_MESSAGE_EREUR);
@@ -91,7 +92,7 @@ public class AbsenceService {
         }
 
         Absence absenceOld = optAbsence.get();
-        if (!absenceOld.getStatut().equals(Statut.AT))  {
+        if (!absenceOld.getStatut().equals(Statut.AT)) {
             response.setCodeMessage(Constant.CODE_MESSAGE_EREUR);
             response.setMessage("Impossible de modifier l'absence, L'absence doit être 'En attente' pour la modifier");
             return response;
@@ -147,7 +148,8 @@ public class AbsenceService {
         }
 
         return new ResponseDTO(Constant.CODE_MESSAGE_OK, "",
-                new ResultPagination(absenceRepository.getRowsNumber(request.getMatricule()), absenceRepository.findByMatricule(request.getMatricule(), request.getFirst(), request.getLimit())));
+                new ResultPagination(absenceRepository.getRowsNumber(request.getMatricule()), absenceRepository
+                        .findByMatricule(request.getMatricule(), request.getFirst(), request.getLimit())));
     }
 
     public ResponseDTO validateAbsence(List<Long> ids, String jwtToken) {
@@ -199,7 +201,7 @@ public class AbsenceService {
             response.setMessage("L'absence est introuvable!");
             return response;
         }
-        if (annulerAbsence.getMotif()==null) {
+        if (annulerAbsence.getMotif() == null) {
             response.setCodeMessage(Constant.CODE_MESSAGE_EREUR);
             response.setMessage("Motif obligatoire!");
             return response;

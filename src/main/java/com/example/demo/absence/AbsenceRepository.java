@@ -32,6 +32,7 @@ public interface AbsenceRepository extends JpaRepository<Absence, Long> {
             + " WHERE ab.collaborateur = :matricule"
             + " AND ab.motif = mab.code"
             + " AND ab.cree_par = u.id"
+            + " AND ab.statut <> 'AN'"
             + " ORDER BY ab.identifiant"
             + " LIMIT :limit OFFSET :first",
             nativeQuery = true)
@@ -43,22 +44,23 @@ public interface AbsenceRepository extends JpaRepository<Absence, Long> {
             + " FROM " + Constant.SCHEMA + ".absence ab, "+ Constant.SCHEMA +".motif_absence mab,"+ Constant.SCHEMA +"._user u"
             + " WHERE ab.collaborateur = :matricule"
             + " AND ab.motif = mab.code"
+            + " AND ab.statut <> 'AN'"
             + " AND ab.cree_par = u.id",
             nativeQuery = true)
     public int getRowsNumber(@Param("matricule") Long matricule);
     
 
-    @Query(nativeQuery = true, value = "SELECT COUNT(*) From " + Constant.SCHEMA
-            + ".absence WHERE collaborateur = :matricule"
-            + " AND (:dateDebut BETWEEN date_debut AND date_fin"
-            + " OR date_debut BETWEEN :dateDebut AND  :dateFin)")
-    public int getCount(@Param("matricule") Long matricule, @Param("dateDebut") Date dateDebut,
-            @Param("dateFin") Date dateDefin);
+//     @Query(nativeQuery = true, value = "SELECT COUNT(*) From " + Constant.SCHEMA
+//             + ".absence WHERE collaborateur = :matricule"
+//             + " AND (:dateDebut BETWEEN date_debut AND date_fin"
+//             + " OR date_debut BETWEEN :dateDebut AND  :dateFin)")
+//     public int getCount(@Param("matricule") Long matricule, @Param("dateDebut") Date dateDebut,
+//             @Param("dateFin") Date dateDefin);
 
     @Query(nativeQuery = true, value = "SELECT COUNT(*) From " + Constant.SCHEMA
             + ".absence ab WHERE collaborateur = :matricule AND (:absenceId IS NULL OR ab.identifiant <> :absenceId)"
             + " AND (:dateDebut BETWEEN date_debut AND date_fin"
-            + " OR date_debut BETWEEN :dateDebut AND :dateFin)")
+            + " OR date_debut BETWEEN :dateDebut AND :dateFin) AND ab.statut <> 'AN'")
     public int getCount(@Param("matricule") Long matricule, @Param("absenceId") Long absenceId, @Param("dateDebut") Date dateDebut,
             @Param("dateFin") Date dateDefin);
 
